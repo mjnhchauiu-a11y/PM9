@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Phần mềm AI Studio Google</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .sidebar {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .category-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .category-item.active {
+            background: #3498db;
+        }
+
+        .category-item i {
+            font-size: 1.2rem;
+        }
+
+        .category-count {
+            margin-left: auto;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .category-delete {
+            position: absolute;
+            right: 10px;
+            background: rgba(231, 76, 60, 0.8);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .category-item:hover .category-delete {
+            opacity: 1;
+        }
+
+        .category-delete:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .main-content {
+            padding: 25px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .software-count {
+            background: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .software-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .software-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #3498db;
+            position: relative;
+        }
+
+        .software-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .software-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .software-name {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .software-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .software-toggle:hover {
+            color: #3498db;
+        }
+
+        .software-description {
+            color: #5a6c7d;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            max-height: 60px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .software-description.expanded {
+            max-height: 500px;
+        }
+
+        .software-link {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .software-link:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .software-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .software-card:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Floating Action Button */
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+
+        .fab-main {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #e74c3c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fab-main:hover {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+
+        .fab-options {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .fab-option {
+            background: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .fab-option:hover {
+            background: #2980b9;
+            transform: translateX(-5px);
+        }
+
+        .fab-options.show {
+            display: flex;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #7f8c8d;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .storage-info {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .storage-info button {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .software-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .fab-options {
+                right: auto;
+                left: 0;
+            }
+            
+            .fab-option {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> Quản lý Phần mềm AI Studio</h1>
+            <p>Tổ chức và quản lý các phần mềm AI theo nhóm</p>
+            <div class="storage-info">
+                Dữ liệu được lưu trữ cục bộ trên máy tính của bạn • 
+                <button onclick="showStorageInfo()">Thông tin lưu trữ</button> • 
+                <button onclick="exportData()">Xuất dữ liệu</button> • 
+                <button onclick="importData()">Nhập dữ liệu</button>
+                <button onclick="clearAllData()" style="color: #e74c3c;">Xóa tất cả</button>
+            </div>
+        </div>
+
+        <div class="app-container">
+            <div class="sidebar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm phần mềm...">
+                </div>
+                
+                <ul class="category-list" id="categoryList">
+                    <!-- Categories will be populated by JavaScript -->
+                </ul>
+            </div>
+
+            <div class="main-content">
+                <div class="category-header">
+                    <h2 class="category-title" id="currentCategory">
+                        <i class="fas fa-th-large"></i> 
+                        <span id="categoryName">Tất cả phần mềm</span>
+                        <span class="software-count" id="softwareCount">0</span>
+                    </h2>
+                </div>
+
+                <div class="software-grid" id="softwareGrid">
+                    <!-- Software cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fab-container">
+        <div class="fab-options" id="fabOptions">
+            <div class="fab-option" onclick="showAddCategoryModal()">
+                <i class="fas fa-folder-plus"></i>
+                <span>Thêm thư mục mới</span>
+            </div>
+            <div class="fab-option" onclick="showAddSoftwareModal()">
+                <i class="fas fa-plus-circle"></i>
+                <span>Thêm phần mềm mới</span>
+            </div>
+        </div>
+        <div class="fab-main" id="fabMain">
+            <i class="fas fa-plus"></i>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div class="modal" id="addCategoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Thêm thư mục mới</h3>
+                <button class="close-btn" onclick="hideAddCategoryModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="categoryNameInput">Tên thư mục</label>
+                <input type="text" id="categoryNameInput" placeholder="Nhập tên thư mục...">
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="hideAddCategoryModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="addNewCategory()">Thêm thư mục</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Software Modal -->
+    <div class="modal" id="addSoftwareModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Thêm phần mềm mới</h3>
+                <button class="close-btn" onclick="hideAddSoftwareModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="softwareNameInput">Tên phần mềm</label>
+                <input type="text" id="softwareNameInput" placeholder="Nhập tên phần mềm...">
+            </div>
+            <div class="form-group">
+                <label for="softwareCategorySelect">Thư mục</label>
+                <select id="softwareCategorySelect">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="softwareLinkInput">Đường link phần mềm</label>
+                <input type="url" id="softwareLinkInput" placeholder="https://aistudio.google.com/app/...">
+            </div>
+            <div class="form-group">
+                <label for="softwareDescriptionInput">Mô tả phần mềm</label>
+                <textarea id="softwareDescriptionInput" placeholder="Mô tả ngắn về phần mềm..."></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="hideAddSoftwareModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="addNewSoftware()">Thêm phần mềm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Data Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Nhập dữ liệu</h3>
+                <button class="close-btn" onclick="hideImportModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="importDataInput">Dán dữ liệu JSON vào đây</label>
+                <textarea id="importDataInput" placeholder='{"categories": [...], "software": [...]}' style="min-height: 200px;"></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="hideImportModal()">Hủy</button>
+                <button class="btn btn-primary" onclick="processImport()">Nhập dữ liệu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Storage keys
+        const STORAGE_KEYS = {
+            CATEGORIES: 'ai_studio_categories',
+            SOFTWARE: 'ai_studio_software'
+        };
+
+        // Default data
+        const defaultCategories = [
+            { id: 'all', name: 'Tất cả phần mềm', icon: 'fas fa-th-large', count: 0 },
+            { id: 'teaching', name: 'Công cụ giảng dạy', icon: 'fas fa-chalkboard-teacher', count: 0 },
+            { id: 'design', name: 'Thiết kế & Sáng tạo', icon: 'fas fa-palette', count: 0 },
+            { id: 'simulation', name: 'Mô phỏng', icon: 'fas fa-vial', count: 0 },
+            { id: 'language', name: 'Ngôn ngữ & Dịch thuật', icon: 'fas fa-language', count: 0 },
+            { id: 'analytics', name: 'Phân tích dữ liệu', icon: 'fas fa-chart-bar', count: 0 }
+        ];
+
+        const defaultSoftware = [
+            {
+                id: 1,
+                name: "Trình tạo bài giảng tự động",
+                description: "Công cụ tạo bài giảng và slide thuyết trình tự động dựa trên chủ đề và cấp độ học sinh. Hỗ trợ đa dạng môn học và định dạng xuất bản.",
+                category: "teaching",
+                link: "https://aistudio.google.com/app/1",
+                created: "2024-01-15"
+            },
+            {
+                id: 2,
+                name: "Thiết kế bìa sách AI",
+                description: "Ứng dụng thiết kế bìa sách và ấn phẩm với AI. Chỉ cần nhập mô tả, hệ thống sẽ tạo ra các mẫu bìa chuyên nghiệp phù hợp với nội dung.",
+                category: "design",
+                link: "https://aistudio.google.com/app/2",
+                created: "2024-01-20"
+            }
+        ];
+
+        // Load data from localStorage or use defaults
+        let categories = loadFromStorage(STORAGE_KEYS.CATEGORIES) || defaultCategories;
+        let softwareData = loadFromStorage(STORAGE_KEYS.SOFTWARE) || defaultSoftware;
+
+        // DOM Elements
+        const categoryList = document.getElementById('categoryList');
+        const softwareGrid = document.getElementById('softwareGrid');
+        const categoryName = document.getElementById('categoryName');
+        const softwareCount = document.getElementById('softwareCount');
+        const searchInput = document.getElementById('searchInput');
+        const fabMain = document.getElementById('fabMain');
+        const fabOptions = document.getElementById('fabOptions');
+        const addCategoryModal = document.getElementById('addCategoryModal');
+        const addSoftwareModal = document.getElementById('addSoftwareModal');
+        const importModal = document.getElementById('importModal');
+        const softwareCategorySelect = document.getElementById('softwareCategorySelect');
+
+        // Storage functions
+        function loadFromStorage(key) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            } catch (error) {
+                console.error('Error loading from storage:', error);
+                return null;
+            }
+        }
+
+        function saveToStorage(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+                console.log(`Đã lưu dữ liệu vào ${key}:`, data);
+                return true;
+            } catch (error) {
+                console.error('Error saving to storage:', error);
+                alert('Lỗi khi lưu dữ liệu. Có thể bộ nhớ đã đầy hoặc trình duyệt không hỗ trợ localStorage.');
+                return false;
+            }
+        }
+
+        function saveAllData() {
+            const success1 = saveToStorage(STORAGE_KEYS.CATEGORIES, categories);
+            const success2 = saveToStorage(STORAGE_KEYS.SOFTWARE, softwareData);
+            return success1 && success2;
+        }
+
+        function clearAllData() {
+            if (confirm('Bạn có chắc chắn muốn xóa TẤT CẢ dữ liệu? Hành động này không thể hoàn tác!')) {
+                localStorage.removeItem(STORAGE_KEYS.CATEGORIES);
+                localStorage.removeItem(STORAGE_KEYS.SOFTWARE);
+                categories = JSON.parse(JSON.stringify(defaultCategories));
+                softwareData = JSON.parse(JSON.stringify(defaultSoftware));
+                saveAllData();
+                initApp();
+                alert('Đã xóa tất cả dữ liệu và khôi phục mặc định!');
+            }
+        }
+
+        function exportData() {
+            const data = {
+                categories: categories,
+                software: softwareData,
+                exportedAt: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ai-studio-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert('Dữ liệu đã được xuất thành công!');
+        }
+
+        function importData() {
+            importModal.classList.add('show');
+        }
+
+        function hideImportModal() {
+            importModal.classList.remove('show');
+            document.getElementById('importDataInput').value = '';
+        }
+
+        function processImport() {
+            const importData = document.getElementById('importDataInput').value.trim();
+            
+            if (!importData) {
+                alert('Vui lòng nhập dữ liệu JSON');
+                return;
+            }
+
+            try {
+                const parsedData = JSON.parse(importData);
+                
+                if (!parsedData.categories || !parsedData.software) {
+                    throw new Error('Dữ liệu không hợp lệ');
+                }
+
+                if (confirm('Bạn có chắc chắn muốn nhập dữ liệu mới? Dữ liệu hiện tại sẽ bị ghi đè!')) {
+                    categories = parsedData.categories;
+                    softwareData = parsedData.software;
+                    saveAllData();
+                    initApp();
+                    hideImportModal();
+                    alert('Nhập dữ liệu thành công!');
+                }
+            } catch (error) {
+                alert('Dữ liệu JSON không hợp lệ: ' + error.message);
+            }
+        }
+
+        function showStorageInfo() {
+            const totalSpace = 5 * 1024 * 1024; // 5MB typical for localStorage
+            let usedSpace = 0;
+            
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    usedSpace += localStorage[key].length * 2; // UTF-16 characters use 2 bytes
+                }
+            }
+            
+            const usedPercent = ((usedSpace / totalSpace) * 100).toFixed(1);
+            
+            alert(`Thông tin lưu trữ:\n\n` +
+                  `• Đã sử dụng: ${(usedSpace / 1024).toFixed(1)} KB / ${(totalSpace / 1024).toFixed(0)} KB\n` +
+                  `• Tỷ lệ sử dụng: ${usedPercent}%\n` +
+                  `• Số thư mục: ${categories.length}\n` +
+                  `• Số phần mềm: ${softwareData.length}\n\n` +
+                  `Dữ liệu được lưu trữ cục bộ trên trình duyệt của bạn.`);
+        }
+
+        // Initialize the application
+        function initApp() {
+            updateCategoryCounts();
+            renderCategories();
+            renderSoftware('all');
+            setupEventListeners();
+            populateCategorySelect();
+            
+            // Kiểm tra xem dữ liệu có được lưu không
+            console.log('Dữ liệu đã tải:', {
+                categories: categories,
+                software: softwareData
+            });
+        }
+
+        // Update software counts for each category
+        function updateCategoryCounts() {
+            categories.forEach(category => {
+                if (category.id === 'all') {
+                    category.count = softwareData.length;
+                } else {
+                    category.count = softwareData.filter(software => software.category === category.id).length;
+                }
+            });
+        }
+
+        // Render category list
+        function renderCategories() {
+            categoryList.innerHTML = '';
+            categories.forEach(category => {
+                if (category.id === 'all') return; // Skip "all" category in sidebar
+                
+                const categoryItem = document.createElement('li');
+                categoryItem.className = 'category-item';
+                categoryItem.dataset.category = category.id;
+                categoryItem.innerHTML = `
+                    <i class="${category.icon}"></i>
+                    <span>${category.name}</span>
+                    <span class="category-count">${category.count}</span>
+                    ${category.id !== 'all' ? '<button class="category-delete" onclick="deleteCategory(\'' + category.id + '\')"><i class="fas fa-times"></i></button>' : ''}
+                `;
+                categoryList.appendChild(categoryItem);
+            });
+        }
+
+        // Render software grid
+        function renderSoftware(categoryId, searchTerm = '') {
+            let filteredSoftware = softwareData;
+            
+            // Filter by category
+            if (categoryId !== 'all') {
+                filteredSoftware = filteredSoftware.filter(software => software.category === categoryId);
+            }
+            
+            // Filter by search term
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filteredSoftware = filteredSoftware.filter(software => 
+                    software.name.toLowerCase().includes(term) || 
+                    software.description.toLowerCase().includes(term)
+                );
+            }
+            
+            // Update UI
+            const currentCategory = categories.find(cat => cat.id === categoryId);
+            categoryName.textContent = currentCategory.name;
+            softwareCount.textContent = filteredSoftware.length;
+            
+            // Render software cards
+            softwareGrid.innerHTML = '';
+            
+            if (filteredSoftware.length === 0) {
+                softwareGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <h3>Không tìm thấy phần mềm nào</h3>
+                        <p>Hãy thử tìm kiếm với từ khóa khác hoặc chọn danh mục khác</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredSoftware.forEach(software => {
+                const category = categories.find(cat => cat.id === software.category);
+                const softwareCard = document.createElement('div');
+                softwareCard.className = 'software-card';
+                softwareCard.innerHTML = `
+                    <button class="delete-btn" onclick="deleteSoftware(${software.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="software-header">
+                        <h3 class="software-name">${software.name}</h3>
+                        <button class="software-toggle" onclick="toggleDescription(this)">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="software-description">
+                        ${software.description}
+                    </div>
+                    <a href="${software.link}" target="_blank" class="software-link">
+                        <i class="fas fa-external-link-alt"></i> Truy cập phần mềm
+                    </a>
+                    <div class="software-meta">
+                        <span><i class="fas fa-tag"></i> ${category ? category.name : 'Không xác định'}</span>
+                        <span><i class="fas fa-calendar"></i> ${software.created}</span>
+                    </div>
+                `;
+                softwareGrid.appendChild(softwareCard);
+            });
+        }
+
+        // Toggle software description
+        function toggleDescription(button) {
+            const description = button.parentElement.nextElementSibling;
+            const icon = button.querySelector('i');
+            
+            description.classList.toggle('expanded');
+            
+            if (description.classList.contains('expanded')) {
+                icon.className = 'fas fa-chevron-up';
+            } else {
+                icon.className = 'fas fa-chevron-down';
+            }
+        }
+
+        // Delete software
+        function deleteSoftware(softwareId) {
+            if (confirm('Bạn có chắc chắn muốn xóa phần mềm này?')) {
+                softwareData = softwareData.filter(software => software.id !== softwareId);
+                updateCategoryCounts();
+                renderCategories();
+                saveAllData();
+                
+                const activeCategory = document.querySelector('.category-item.active');
+                const categoryId = activeCategory ? activeCategory.dataset.category : 'all';
+                renderSoftware(categoryId, searchInput.value);
+            }
+        }
+
+        // Delete category
+        function deleteCategory(categoryId) {
+            if (categoryId === 'all') return;
+            
+            const softwareInCategory = softwareData.filter(software => software.category === categoryId);
+            
+            if (softwareInCategory.length > 0) {
+                if (!confirm(`Thư mục này có ${softwareInCategory.length} phần mềm. Tất cả sẽ bị xóa. Bạn có chắc chắn?`)) {
+                    return;
+                }
+                // Remove all software in this category
+                softwareData = softwareData.filter(software => software.category !== categoryId);
+            }
+            
+            // Remove the category
+            categories = categories.filter(category => category.id !== categoryId);
+            updateCategoryCounts();
+            renderCategories();
+            populateCategorySelect();
+            saveAllData();
+            
+            // Switch to "all" category
+            renderSoftware('all', searchInput.value);
+        }
+
+        // Populate category select in modal
+        function populateCategorySelect() {
+            softwareCategorySelect.innerHTML = '';
+            categories.forEach(category => {
+                if (category.id !== 'all') {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    softwareCategorySelect.appendChild(option);
+                }
+            });
+        }
+
+        // FAB functionality
+        function toggleFabOptions() {
+            fabOptions.classList.toggle('show');
+        }
+
+        // Category modal functions
+        function showAddCategoryModal() {
+            addCategoryModal.classList.add('show');
+            fabOptions.classList.remove('show');
+        }
+
+        function hideAddCategoryModal() {
+            addCategoryModal.classList.remove('show');
+            document.getElementById('categoryNameInput').value = '';
+        }
+
+        function addNewCategory() {
+            const categoryName = document.getElementById('categoryNameInput').value.trim();
+            if (!categoryName) {
+                alert('Vui lòng nhập tên thư mục');
+                return;
+            }
+
+            // Check for duplicate names
+            if (categories.some(cat => cat.name.toLowerCase() === categoryName.toLowerCase())) {
+                alert('Tên thư mục đã tồn tại');
+                return;
+            }
+
+            const newCategory = {
+                id: 'category-' + Date.now(),
+                name: categoryName,
+                icon: 'fas fa-folder',
+                count: 0
+            };
+
+            categories.push(newCategory);
+            renderCategories();
+            populateCategorySelect();
+            saveAllData();
+            hideAddCategoryModal();
+            
+            alert('Thêm thư mục thành công!');
+        }
+
+        // Software modal functions
+        function showAddSoftwareModal() {
+            addSoftwareModal.classList.add('show');
+            fabOptions.classList.remove('show');
+        }
+
+        function hideAddSoftwareModal() {
+            addSoftwareModal.classList.remove('show');
+            document.getElementById('softwareNameInput').value = '';
+            document.getElementById('softwareLinkInput').value = '';
+            document.getElementById('softwareDescriptionInput').value = '';
+        }
+
+        function addNewSoftware() {
+            const name = document.getElementById('softwareNameInput').value.trim();
+            const category = document.getElementById('softwareCategorySelect').value;
+            const link = document.getElementById('softwareLinkInput').value.trim();
+            const description = document.getElementById('softwareDescriptionInput').value.trim();
+
+            if (!name || !category || !link || !description) {
+                alert('Vui lòng điền đầy đủ thông tin');
+                return;
+            }
+
+            // Validate URL
+            if (!link.startsWith('http://') && !link.startsWith('https://')) {
+                alert('Vui lòng nhập đường link hợp lệ (bắt đầu với http:// hoặc https://)');
+                return;
+            }
+
+            const newSoftware = {
+                id: Date.now(),
+                name: name,
+                description: description,
+                category: category,
+                link: link,
+                created: new Date().toISOString().split('T')[0]
+            };
+
+            softwareData.push(newSoftware);
+            updateCategoryCounts();
+            renderCategories();
+            saveAllData();
+            
+            const activeCategory = document.querySelector('.category-item.active');
+            const categoryId = activeCategory ? activeCategory.dataset.category : 'all';
+            renderSoftware(categoryId, searchInput.value);
+            
+            hideAddSoftwareModal();
+            alert('Thêm phần mềm thành công!');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Category click event
+            categoryList.addEventListener('click', (e) => {
+                const categoryItem = e.target.closest('.category-item');
+                if (categoryItem) {
+                    // Remove active class from all items
+                    document.querySelectorAll('.category-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked item
+                    categoryItem.classList.add('active');
+                    
+                    // Render software for selected category
+                    const categoryId = categoryItem.dataset.category;
+                    renderSoftware(categoryId, searchInput.value);
+                }
+            });
+
+            // Search input event
+            searchInput.addEventListener('input', (e) => {
+                const activeCategory = document.querySelector('.category-item.active');
+                const categoryId = activeCategory ? activeCategory.dataset.category : 'all';
+                renderSoftware(categoryId, e.target.value);
+            });
+
+            // FAB click event
+            fabMain.addEventListener('click', toggleFabOptions);
+
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === addCategoryModal) {
+                    hideAddCategoryModal();
+                }
+                if (e.target === addSoftwareModal) {
+                    hideAddSoftwareModal();
+                }
+                if (e.target === importModal) {
+                    hideImportModal();
+                }
+            });
+
+            // Close FAB options when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!fabMain.contains(e.target) && !fabOptions.contains(e.target)) {
+                    fabOptions.classList.remove('show');
+                }
+            });
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
